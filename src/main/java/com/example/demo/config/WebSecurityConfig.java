@@ -22,6 +22,9 @@ import com.example.demo.authprovider.RememberMeAuthenticationProvider;
 import com.example.demo.filter.RememberMeAuthenticationFilter;
 import com.example.demo.filter.OauthTokenAuthenticationFilter;
 
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.JwtException;
+
 
 @Profile("!local")
 @Configuration
@@ -67,10 +70,11 @@ public class WebSecurityConfig {
             .requestMatchers(NONE_AUTHENTICATED_PATHS)
             .permitAll()
             .requestMatchers(HttpMethod.GET, "/auth/oauth2/test/**")
-            .hasAnyAuthority("SCOPE_somescope/test")
+            .hasAnyAuthority("SCOPE_write:invoice-notification")
             .anyRequest().authenticated())
         .authenticationManager(authenticationManager);
 
     return http.build();
   }
+
 }

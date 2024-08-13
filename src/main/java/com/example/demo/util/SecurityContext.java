@@ -46,7 +46,6 @@ public class SecurityContext {
     authenticatedUser.setAdminLoggedAsId(user.getAdminId());
     authenticatedUser.setEncodedAdminLoggedAsId(user.getAdminEncodedId());
 
-    SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     return authenticatedUser;
   }
 

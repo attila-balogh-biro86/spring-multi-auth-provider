@@ -3,7 +3,6 @@ package com.example.demo.authprovider;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import com.example.demo.services.User;
 import com.example.demo.filter.RememberMePrincipal;
 import com.example.demo.services.UserService;
-import com.example.demo.util.AuthenticatedUser;
 import com.example.demo.util.SecurityContext;
 
 @Component
@@ -30,9 +28,11 @@ public class RememberMeAuthenticationProvider implements AuthenticationProvider 
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
     if(authentication.getPrincipal() instanceof RememberMePrincipal principal){
-      User user = userService.buildUserByIdWithRememberMe(principal.getUserId(),
-          principal.getRememberMeToken()).get();
-      return SecurityContext.authenticateUser(user);
+      Optional<User> user = userService.buildUserByIdWithRememberMe(principal.getUserId(),
+          principal.getRememberMeToken());
+      if(user.isPresent()){
+        return SecurityContext.authenticateUser(user.get());
+      }
     }
     return null;
   }
