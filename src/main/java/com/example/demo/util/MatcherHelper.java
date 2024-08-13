@@ -1,8 +1,10 @@
-package com.example.demo;
+package com.example.demo.util;
 
 import java.util.Arrays;
 
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.example.demo.config.WebSecurityConfig;
 
 import jakarta.servlet.http.HttpServletRequest;
 

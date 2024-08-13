@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.util;
 
 import org.springframework.security.web.util.matcher.RequestMatcher;
 

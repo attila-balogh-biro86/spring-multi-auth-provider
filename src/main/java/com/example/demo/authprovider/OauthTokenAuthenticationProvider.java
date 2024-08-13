@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.filter.RememberMePrincipal;
@@ -26,30 +27,31 @@ public class OauthTokenAuthenticationProvider implements AuthenticationProvider 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     // Load the user details from the UserDetailsService
-    final String oauthToken = (String) authentication.getPrincipal();
-    String clientId = "";
-    OAuth2User user = new OAuth2User() {
-      @Override
-      public Map<String, Object> getAttributes() {
-        return Map.of();
-      }
+    if(authentication.getPrincipal() instanceof String oauthToken) {
+      String clientId = "";
+      OAuth2User user = new OAuth2User() {
+        @Override
+        public Map<String, Object> getAttributes() {
+          return Map.of();
+        }
 
-      @Override
-      public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-      }
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+          return List.of();
+        }
 
-      @Override
-      public String getName() {
-        return "";
-      }
-    };
-
-    return  new OAuth2AuthenticationToken(user, user.getAuthorities(), clientId);
+        @Override
+        public String getName() {
+          return oauthToken;
+        }
+      };
+      return new OAuth2AuthenticationToken(user, user.getAuthorities(), clientId);
+    }
+    return null;
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return OAuth2AuthenticationToken.class.isAssignableFrom(authentication);
+    return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
   }
 }

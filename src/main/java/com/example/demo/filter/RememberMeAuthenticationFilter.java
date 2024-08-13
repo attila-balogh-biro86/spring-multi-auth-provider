@@ -2,11 +2,10 @@ package com.example.demo.filter;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+
 
 public class RememberMeAuthenticationFilter extends AbstractPreAuthenticatedProcessingFilter {
 
@@ -15,8 +14,12 @@ public class RememberMeAuthenticationFilter extends AbstractPreAuthenticatedProc
 
   @Override
   protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-    return new RememberMePrincipal(request.getHeader(USER_ID_HTTP_HEADER_NAME),
-        getToken(request.getCookies()));
+
+    if(request.getHeader(USER_ID_HTTP_HEADER_NAME) != null) {
+      return new RememberMePrincipal(request.getHeader(USER_ID_HTTP_HEADER_NAME),
+          getToken(request.getCookies()));
+    }
+    return null;
   }
 
   @Override

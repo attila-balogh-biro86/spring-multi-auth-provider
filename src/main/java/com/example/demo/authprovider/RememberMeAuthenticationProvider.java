@@ -3,9 +3,11 @@ package com.example.demo.authprovider;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.services.User;
@@ -26,16 +28,17 @@ public class RememberMeAuthenticationProvider implements AuthenticationProvider 
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-    // Load the user details from the UserDetailsService
-    RememberMePrincipal rememberToken = (RememberMePrincipal) authentication.getPrincipal();
-    User user = userService.buildUserByIdWithRememberMe(rememberToken.getUserId(),
-        rememberToken.getRememberMeToken()).get();
-    // Create a new token with the user details and authorities
-    return SecurityContext.authenticateUser(user);
+
+    if(authentication.getPrincipal() instanceof RememberMePrincipal principal){
+      User user = userService.buildUserByIdWithRememberMe(principal.getUserId(),
+          principal.getRememberMeToken()).get();
+      return SecurityContext.authenticateUser(user);
+    }
+    return null;
   }
 
   @Override
   public boolean supports(Class<?> authentication) {
-    return AuthenticatedUser.class.isAssignableFrom(authentication);
+    return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication);
   }
 }
